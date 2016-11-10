@@ -2,6 +2,8 @@
 #include <ctype.h>
 #include <string.h>
 
+#define MAXLEN 120
+
 void
 check_file(int *had_err, const char *fn)
 {
@@ -10,6 +12,7 @@ check_file(int *had_err, const char *fn)
 	char ln[4096];
 	int msgs = 0;
 	int max_msgs = 20;
+	int length;
 	
 	if ((fp = fopen (fn, "r")) == NULL) {
 		perror (fn);
@@ -19,6 +22,13 @@ check_file(int *had_err, const char *fn)
 
 	ln_nbr = 1;
 	while (fgets (ln, sizeof(ln), fp) != NULL) {
+		length = strlen(ln);
+		/* max line lenght */
+		if(length>=MAXLEN) {
+			fprintf(stderr, "error: %s:%d: line to long:", fn, ln_nbr);
+			*had_err = 1;
+			++msgs;
+		}
 		/* space at the beginning of line */
 		if (ln[0] == ' ' && ln[1] != '*') {
 			fprintf(stderr, "error: %s:%d: invalid indention (SP at column 1):"
@@ -27,7 +37,7 @@ check_file(int *had_err, const char *fn)
 			++msgs;
 		}
 		/* whitespace at the end of the line */
-		if(isspace(ln[strlen(ln)-2])) {
+		if(length > 2 && isspace(ln[length-2])) {
 			fprintf(stderr, "error: %s:%d: trailing whitespace at end of line:"
 				"\n%s\n", fn, ln_nbr, ln);
 			*had_err = 1;
