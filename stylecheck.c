@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 void
 check_file(int *had_err, const char *fn)
@@ -17,18 +19,27 @@ check_file(int *had_err, const char *fn)
 
 	ln_nbr = 1;
 	while (fgets (ln, sizeof(ln), fp) != NULL) {
+		/* space at the beginning of line */
 		if (ln[0] == ' ' && ln[1] != '*') {
-			if(msgs == max_msgs) {
-				fprintf(stderr, "reached max %d messages, not reporting more\n",
-					max_msgs);
-				goto done;
-			}
 			fprintf(stderr, "error: %s:%d: invalid indention (SP at column 1):"
 				"\n%s\n", fn, ln_nbr, ln);
 			*had_err = 1;
 			++msgs;
 		}
+		/* whitespace at the end of the line */
+		if(isspace(ln[strlen(ln)-2])) {
+			fprintf(stderr, "error: %s:%d: trailing whitespace at end of line:"
+				"\n%s\n", fn, ln_nbr, ln);
+			*had_err = 1;
+			++msgs;
+		}
+		/* line number + msg limit */
 		++ln_nbr;
+		if(msgs == max_msgs) {
+			fprintf(stderr, "reached max %d messages, not reporting more\n",
+				max_msgs);
+			goto done;
+		}
 	}
 
 done:
