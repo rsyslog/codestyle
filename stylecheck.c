@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
 
 #define MAXLEN 120
 
@@ -56,13 +58,29 @@ done:
 	fclose (fp);
 }
 
-
 int
 main(int argc, char *argv[])
 {
 	int had_err = 0;
-	for(int i = 1 ; i < argc ; ++i) {
-		check_file(&had_err, argv[i]);
+	int opt = 0;
+	char *ignore;
+	static struct option long_options[] = {
+		{"ignore", required_argument, 0, 'i'},
+		{0, 0, 0, 0}
+	};
+	int long_index = 0;
+	while((opt = getopt_long(argc, argv, "", long_options, &long_index)) != -1) {
+		switch(opt) {
+		case 'i':
+			ignore = optarg;
+			break;
+		}
+	}
+
+	for(int i = optind; i < argc ; ++i) {
+		if(strcmp(argv[i], ignore)!=0) {
+			check_file(&had_err, argv[i]);
+		}
 	}
 	return had_err;
 }
