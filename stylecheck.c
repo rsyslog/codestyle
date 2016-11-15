@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <libgen.h>
 
 #define MAXLEN 120
 
@@ -78,7 +79,7 @@ main(int argc, char *argv[])
 	}
 
 	for(int i = optind; i < argc ; ++i) {
-		if(strcmp(argv[i], ignore)!=0) {
+		if(strcmp(basename(argv[i]), ignore)!=0) {
 			check_file(&had_err, argv[i]);
 		}
 	}
