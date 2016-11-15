@@ -1,0 +1,19 @@
+language: c
+
+compiler:
+  - gcc
+  - clang
+
+matrix:
+  exclude:
+      - compiler: gcc
+      - compiler: clang
+  include:
+       - compiler: gcc
+       - compiler: clang
+         dist: trusty
+
+script:
+  - autoreconf --force --verbose --install
+  - ./configure
+  - make

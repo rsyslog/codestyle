@@ -26,9 +26,7 @@ m4_ifdef([AX_IS_RELEASE], [
 		AC_MSG_WARN([missing AX_COMPILER_FLAGS macro, not using it])
 	])
 ], [
-	if test "$GCC" = "yes"
-	then CFLAGS="$CFLAGS -W -Wall -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -g"
-	fi
+	CFLAGS="$CFLAGS -W -Werror -Wall -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -g"
 	AC_MSG_WARN([missing AX_IS_RELEASE macro, not using AX_COMPILER_FLAGS macro because of this])
 ])
 
