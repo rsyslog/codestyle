@@ -1,19 +1,27 @@
 language: c
 
+dist: trusty
+
 compiler:
   - gcc
   - clang
 
-matrix:
-  exclude:
-      - compiler: gcc
-      - compiler: clang
-  include:
-       - compiler: gcc
-       - compiler: clang
-         dist: trusty
+env: CFLAGS="-g -fsanitize=address"
+
+#matrix:
+  #exclude:
+      #- compiler: gcc
+      #- compiler: clang
+  #include:
+       #- compiler: clang
+       #- env: CFLAGS="-g "
+       #- env: CFLAGS="-g -fsanitize=address"
+         #dist: trusty
 
 script:
   - autoreconf --force --verbose --install
   - ./configure
+  #- cat config.log
   - make
+  - make check
+  - cat tests/test-suite.log
