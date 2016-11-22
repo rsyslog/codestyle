@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([liblognorm], [2.0.2], [rgerhards@adiscon.com])
+AC_INIT([liblognorm], [1.0.0], [rgerhards@adiscon.com])
 AM_INIT_AUTOMAKE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_CONFIG_SRCDIR([stylecheck.c])
@@ -14,6 +14,7 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CC_C99
+AC_CONFIG_MACRO_DIR([m4])
 
 m4_ifdef([AX_IS_RELEASE], [
 	AX_IS_RELEASE([git-directory])
@@ -31,6 +32,10 @@ m4_ifdef([AX_IS_RELEASE], [
 ])
 
 
-AC_CONFIG_FILES([Makefile])
+AC_HEADER_STDC
+
+AC_CONFIG_FILES([Makefile \
+		tests/Makefile
+		])
+
 AC_OUTPUT
-AC_CONFIG_MACRO_DIR([m4])
