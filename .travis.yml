@@ -1,3 +1,4 @@
+sudo: required
 language: c
 
 dist: trusty
@@ -8,20 +9,20 @@ compiler:
 
 env: CFLAGS="-g -fsanitize=address"
 
-#matrix:
-  #exclude:
-      #- compiler: gcc
-      #- compiler: clang
-  #include:
-       #- compiler: clang
-       #- env: CFLAGS="-g "
-       #- env: CFLAGS="-g -fsanitize=address"
-         #dist: trusty
+install:
+  # the following is a work-around to solve the
+  # "too old autoconf-archive" problem
+  - mkdir tmp
+  - cd tmp
+  - git clone git://git.sv.gnu.org/autoconf-archive.git
+  - sudo cp autoconf-archive/m4/* /usr/share/aclocal
+  - cd ..
+  - rm -rf tmp
 
 script:
+  - sudo find / -name ax_is_release.*
   - autoreconf --force --verbose --install
-  - ./configure
-  #- cat config.log
+  - ./configure --enable-Werror
   - make
   - make check
   - cat tests/test-suite.log
