@@ -28,7 +28,7 @@ check_file(int *had_err, const char *fn)
 		length = strlen(ln);
 		/* max line lenght */
 		if(length>=MAXLEN) {
-			fprintf(stderr, "error: %s:%d: line to long:", fn, ln_nbr);
+			fprintf(stderr, "error: %s:%d: line to long:\n", fn, ln_nbr);
 			*had_err = 1;
 			++msgs;
 		}
