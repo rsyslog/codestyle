@@ -9,16 +9,6 @@ compiler:
 
 env: CFLAGS="-g -fsanitize=address"
 
-#matrix:
-  #exclude:
-      #- compiler: gcc
-      #- compiler: clang
-  #include:
-       #- compiler: clang
-       #- env: CFLAGS="-g "
-       #- env: CFLAGS="-g -fsanitize=address"
-         #dist: trusty
-
 install:
   # the following is a work-around to solve the
   # "too old autoconf-archive" problem
@@ -33,7 +23,6 @@ script:
   - sudo find / -name ax_is_release.*
   - autoreconf --force --verbose --install
   - ./configure
-  #- ./configure --enable-compile-warnings=error
   - make
   - make check
   - cat tests/test-suite.log
