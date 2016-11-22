@@ -7,7 +7,7 @@
 
 #define MAXLEN 120
 
-void
+static void
 check_file(int *had_err, const char *fn)
 {
 	FILE *fp;
@@ -74,6 +74,8 @@ main(int argc, char *argv[])
 		switch(opt) {
 		case 'i':
 			ignore = optarg;
+			break;
+		default:
 			break;
 		}
 	}
