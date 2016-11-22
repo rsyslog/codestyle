@@ -22,7 +22,7 @@ install:
 script:
   - sudo find / -name ax_is_release.*
   - autoreconf --force --verbose --install
-  - ./configure
+  - ./configure --enable-Werror
   - make
   - make check
   - cat tests/test-suite.log
