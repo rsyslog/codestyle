@@ -4,7 +4,8 @@ TESTS_SHELLSCRIPTS = \
 	chk_linelength.sh \
 	chk_functioning.sh \
 	chk_more_files.sh \
-	chk_ignore_file.sh
+	chk_ignore_file.sh \
+	chk_ignore_file_short.sh
 
 TESTS = \
 	$(TESTS_SHELLSCRIPTS)
