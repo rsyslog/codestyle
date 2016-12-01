@@ -20,6 +20,7 @@ install:
   - rm -rf tmp
 
 script:
+  - CI/check_codestyle.sh
   - sudo find / -name ax_is_release.*
   - autoreconf --force --verbose --install
   - ./configure --enable-Werror
