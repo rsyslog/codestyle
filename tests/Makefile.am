@@ -5,7 +5,8 @@ TESTS_SHELLSCRIPTS = \
 	chk_functioning.sh \
 	chk_more_files.sh \
 	chk_ignore_file.sh \
-	chk_ignore_file_short.sh
+	chk_ignore_file_short.sh \
+	chk_permit_dos_format.sh
 
 TESTS = \
 	$(TESTS_SHELLSCRIPTS)
