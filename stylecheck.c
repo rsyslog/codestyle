@@ -8,7 +8,7 @@
 #define MAXLEN 120
 
 static void
-check_file(int *had_err, const char *fn)
+check_file(int *had_err, const char *fn, int dos)
 {
 	FILE *fp;
 	int ln_nbr;
@@ -16,6 +16,7 @@ check_file(int *had_err, const char *fn)
 	int msgs = 0;
 	int max_msgs = 20;
 	int length;
+	int position = 2;
 	
 	if ((fp = fopen (fn, "r")) == NULL) {
 		perror (fn);
@@ -40,7 +41,15 @@ check_file(int *had_err, const char *fn)
 			++msgs;
 		}
 		/* whitespace at the end of the line */
-		if(length > 2 && isspace(ln[length-2])) {
+		if(dos) {
+			if(length > position && ln[length-1]=='\n' && ln[length-2]=='\r') {
+				position = 3;
+			}
+			else {
+				position = 2;
+			}
+		}
+		if(length > position && isspace(ln[length-position])) {
 			fprintf(stderr, "error: %s:%d: trailing whitespace at end of line:"
 				"\n%s\n", fn, ln_nbr, ln);
 			*had_err = 1;
@@ -64,16 +73,21 @@ main(int argc, char *argv[])
 {
 	int had_err = 0;
 	int opt = 0;
+	int dos = 0;
 	char *ignore = NULL;
 	static struct option long_options[] = {
 		{"ignore", required_argument, 0, 'i'},
+		{"permit-dos-format", no_argument, 0, 'd'},
 		{0, 0, 0, 0}
 	};
 	int long_index = 0;
-	while((opt = getopt_long(argc, argv, "i:", long_options, &long_index)) != -1) {
+	while((opt = getopt_long(argc, argv, "i:d", long_options, &long_index)) != -1) {
 		switch(opt) {
 		case 'i':
 			ignore = optarg;
+			break;
+		case 'd':
+			dos = 1;
 			break;
 		default:
 			break;
@@ -82,7 +96,7 @@ main(int argc, char *argv[])
 
 	for(int i = optind; i < argc ; ++i) {
 		if(ignore == NULL || strcmp(basename(argv[i]), ignore) != 0) {
-			check_file(&had_err, argv[i]);
+			check_file(&had_err, argv[i], dos);
 		}
 	}
 	return had_err;
