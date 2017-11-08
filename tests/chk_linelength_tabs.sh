@@ -11,7 +11,7 @@ void main()
 }
 ' > testfile.c # last line is a TAB!
 ../stylecheck -wf testfile.c &> output
-echo 'error: testfile.c:7: line too long:
+echo 'error: testfile.c:7: line too long (136):
 Length of tabs: 49
 							if( variable1 < variable2 || variable1 == variable2 || variable1 > variable2) {
 ' | diff - output

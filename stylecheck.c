@@ -42,7 +42,7 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 		}
 		lengthAfterTabs = length + addLength;
 		if(lengthAfterTabs>=maxlen) {
-			fprintf(stderr, "error: %s:%d: line too long:\n", fn, ln_nbr);
+			fprintf(stderr, "error: %s:%d: line too long (%d):\n", fn, ln_nbr, lengthAfterTabs);
 			if(length<maxlen) {
 				fprintf(stderr, "Length of tabs: %d\n", addLength);
 			}
