@@ -2,6 +2,7 @@ TESTS_SHELLSCRIPTS = \
 	chk_SP_leading.sh \
 	chk_trailing_whitespace.sh \
 	chk_linelength.sh \
+	chk_linelength_tabs.sh \
 	chk_functioning.sh \
 	chk_more_files.sh \
 	chk_ignore_file.sh \

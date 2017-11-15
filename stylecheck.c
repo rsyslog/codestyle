@@ -16,6 +16,9 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 	int msgs = 0;
 	int max_msgs = 20;
 	int length;
+	int tabLength;
+	int addLength = 0;
+	int lengthAfterTabs = 0;
 	int position = 2;
 	
 	if ((fp = fopen (fn, "r")) == NULL) {
@@ -28,8 +31,22 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 	while (fgets (ln, sizeof(ln), fp) != NULL) {
 		length = strlen(ln);
 		/* max line lenght */
-		if(length>=maxlen) {
-			fprintf(stderr, "error: %s:%d: line too long:\n%s\n", fn, ln_nbr, ln);
+		addLength = 0;
+		for(int i=0;i<length;i++) {
+			tabLength = 0;
+			if(ln[i]=='\t') {
+				tabLength = (i+addLength)%8;
+				tabLength = 8-tabLength-1;
+			}
+			addLength = addLength + tabLength;
+		}
+		lengthAfterTabs = length + addLength;
+		if(lengthAfterTabs>=maxlen) {
+			fprintf(stderr, "error: %s:%d: line too long (%d):\n", fn, ln_nbr, lengthAfterTabs);
+			if(length<maxlen) {
+				fprintf(stderr, "Length of tabs: %d\n", addLength);
+			}
+			fprintf(stderr, "%s\n", ln);
 			*had_err = 1;
 			++msgs;
 		}
