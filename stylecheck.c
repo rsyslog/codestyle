@@ -16,10 +16,8 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 	int msgs = 0;
 	int max_msgs = 20;
 	int length;
-	int tabLength;
-	int addLength = 0;
-	int lengthAfterTabs = 0;
 	int position = 2;
+	int pos;
 	
 	if ((fp = fopen (fn, "r")) == NULL) {
 		perror (fn);
@@ -30,23 +28,23 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 	ln_nbr = 1;
 	while (fgets (ln, sizeof(ln), fp) != NULL) {
 		length = strlen(ln);
-		/* max line lenght */
-		addLength = 0;
-		for(int i=0;i<length;i++) {
-			tabLength = 0;
-			if(ln[i]=='\t') {
-				tabLength = (i+addLength)%8;
-				tabLength = 8-tabLength-1;
-			}
-			addLength = addLength + tabLength;
+		if(ln[length-1] != '\n') {
+			fprintf(stderr, "error: %s:%d: line is missing LF:\n%s\n", fn, ln_nbr, ln);
+			*had_err = 1;
+			++msgs;
+			continue;
 		}
-		lengthAfterTabs = length + addLength;
-		if(lengthAfterTabs>=maxlen) {
-			fprintf(stderr, "error: %s:%d: line too long (%d):\n", fn, ln_nbr, lengthAfterTabs);
-			if(length<maxlen) {
-				fprintf(stderr, "Length of tabs: %d\n", addLength);
+		/* max line lenght */
+		pos = 0;
+		for(int i=0;i<length-1;i++) {
+			++pos;
+			if(ln[i]=='\t') {
+				pos += (8 - pos % 8) % 8;
 			}
-			fprintf(stderr, "%s\n", ln);
+		}
+		if(pos > maxlen) {
+			fprintf(stderr, "error: %s:%d: line too long (%d):\n%s\n",
+				fn, ln_nbr, pos, ln);
 			*had_err = 1;
 			++msgs;
 		}
