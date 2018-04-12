@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 
-static void
+static int
 check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, int maxlen)
 {
 	FILE *fp;
@@ -22,7 +22,7 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 	if ((fp = fopen (fn, "r")) == NULL) {
 		perror (fn);
 		*had_err = 1;
-		return;
+		return 1;
 	}
 
 	ln_nbr = 1;
@@ -85,6 +85,10 @@ check_file(int *had_err, const char *fn, int dos, int trailing, int firstspace, 
 
 done:
 	fclose (fp);
+	if(msgs != 0) {
+		return 1;
+	}
+	return 0;
 }
 
 int
@@ -97,17 +101,24 @@ main(int argc, char *argv[])
 	int firstspace = 1;
 	int maxlen = 120;
 	char *ignore = NULL;
+	const char *list = NULL;
+	FILE *fileList;
+
 	static struct option long_options[] = {
 		{"ignore", required_argument, 0, 'i'},
 		{"permit-dos-format", no_argument, 0, 'd'},
 		{"disable-trailing-whitespace", no_argument, 0, 'w'},
 		{"disable-first-space", no_argument, 0, 'f'},
 		{"set-maxlength", required_argument, 0, 'l'},
+		{"file-list", required_argument, 0, 'a'},
 		{0, 0, 0, 0}
 	};
 	int long_index = 0;
-	while((opt = getopt_long(argc, argv, "i:dwfl:", long_options, &long_index)) != -1) {
+	while((opt = getopt_long(argc, argv, "a:i:dwfl:", long_options, &long_index)) != -1) {
 		switch(opt) {
+		case 'a':
+			list = optarg;
+			break;
 		case 'i':
 			ignore = optarg;
 			break;
@@ -128,10 +139,25 @@ main(int argc, char *argv[])
 		}
 	}
 
+	if(list != NULL) {
+		if ((fileList = fopen (list, "w")) == NULL) {
+			perror (list);
+			return had_err;
+		}
+	}
+
 	for(int i = optind; i < argc ; ++i) {
 		if(ignore == NULL || strcmp(basename(argv[i]), ignore) != 0) {
-			check_file(&had_err, argv[i], dos, trailing, firstspace, maxlen);
+			if(check_file(&had_err, argv[i], dos, trailing, firstspace, maxlen) && list != NULL) {
+				fprintf(fileList, "FAIL: %s\n", argv[i]);
+			} else if(list != NULL) {
+				fprintf(fileList, "SUCCESS: %s\n", argv[i]);
+			}
 		}
+	}
+
+	if(list != NULL) {
+		fclose(fileList);
 	}
 	return had_err;
 }

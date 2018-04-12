@@ -9,7 +9,8 @@ TESTS_SHELLSCRIPTS = \
 	chk_ignore_file_short.sh \
 	chk_permit_dos_format.sh \
 	chk_disable_trailing_whitespace.sh \
-	chk_disable_SP_leading.sh
+	chk_disable_SP_leading.sh \
+	chk_file_list.sh
 
 TESTS = \
 	$(TESTS_SHELLSCRIPTS)
